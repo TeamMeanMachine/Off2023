@@ -11,6 +11,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.team2471.frc.lib.actuators.FalconID
 import org.team2471.frc.lib.actuators.MotorController
+import org.team2471.frc.lib.actuators.SparkMaxID
 import org.team2471.frc.lib.control.PDConstantFController
 import org.team2471.frc.lib.control.PDController
 import org.team2471.frc.lib.coroutines.*
@@ -58,38 +59,38 @@ object Drive : Subsystem("Drive"), SwerveDrive {
      * **/
     override val modules: Array<SwerveDrive.Module> = arrayOf(
         Module(
-            MotorController(FalconID(Falcons.LEFT_FRONT_DRIVE)),
-            MotorController(FalconID(Falcons.LEFT_FRONT_STEER)),
+            MotorController(SparkMaxID(Sparks.FRONT_LEFT_DRIVE)),
+            MotorController(SparkMaxID(Sparks.FRONT_LEFT_DRIVE)),
             Vector2(-9.75, 9.75),
             Preferences.getDouble("Angle Offset 0",-9.05).degrees,
-            CANCoders.CANCODER_FRONTLEFT,
+            DigitalSensors.FRONT_LEFT,
             odometer0Entry,
             0
         ),
         Module(
-            MotorController(FalconID(Falcons.RIGHT_FRONT_DRIVE)),
-            MotorController(FalconID(Falcons.RIGHT_FRONT_STEER)),
+            MotorController(SparkMaxID(Sparks.FRONT_RIGHT_DRIVE)),
+            MotorController(SparkMaxID(Sparks.FRONT_RIGHT_STEER)),
             Vector2(9.75, 9.75),
             Preferences.getDouble("Angle Offset 1",-253.4).degrees,
-            CANCoders.CANCODER_FRONTRIGHT,
+            DigitalSensors.FRONT_RIGHT,
             odometer1Entry,
             1
         ),
         Module(
-            MotorController(FalconID(Falcons.RIGHT_REAR_DRIVE)),
-            MotorController(FalconID(Falcons.RIGHT_REAR_STEER)),
+            MotorController(SparkMaxID(Sparks.REAR_RIGHT_DRIVE)),
+            MotorController(SparkMaxID(Sparks.REAR_RIGHT_STEER)),
             Vector2(9.75, -9.75),
             Preferences.getDouble("Angle Offset 2",-345.05).degrees,
-            CANCoders.CANCODER_REARRIGHT,
+            DigitalSensors.REAR_RIGHT,
             odometer2Entry,
             2
         ),
         Module(
-            MotorController(FalconID(Falcons.LEFT_REAR_DRIVE)),
-            MotorController(FalconID(Falcons.LEFT_REAR_STEER)),
+            MotorController(SparkMaxID(Sparks.REAR_LEFT_DRIVE)),
+            MotorController(SparkMaxID(Sparks.REAR_LEFT_STEER)),
             Vector2(-9.75, -9.75),
             Preferences.getDouble("Angle Offset 3",-308.41).degrees,
-            CANCoders.CANCODER_REARLEFT,
+            DigitalSensors.REAR_LEFT,
             odometer3Entry,
             3
         )
@@ -133,6 +134,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
     override val carpetFlow = Vector2(0.0, 1.0)
     override val kCarpet = 0.0234 // how much downstream and upstream carpet directions affect the distance, for no effect, use  0.0 (2.5% more distance downstream)
     override val kTread = 0.0 //.04 // how much of an effect treadWear has on distance (fully worn tread goes 4% less than full tread)  0.0 for no effect
+    override val plannedPath: NetworkTableEntry
+        get() = table.getEntry("")
 
     val autoPDController = PDConstantFController(0.015, 0.04, 0.05)
     val teleopPDController =  PDConstantFController(0.012, 0.09, 0.05)
