@@ -1,7 +1,5 @@
 package org.team2471.off2023
 
-import com.ctre.phoenix.sensors.CANCoder
-import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.*
@@ -9,7 +7,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.team2471.frc.lib.actuators.FalconID
 import org.team2471.frc.lib.actuators.MotorController
 import org.team2471.frc.lib.actuators.SparkMaxID
 import org.team2471.frc.lib.control.PDConstantFController
@@ -23,18 +20,10 @@ import org.team2471.frc.lib.math.linearMap
 import org.team2471.frc.lib.math.round
 import org.team2471.frc.lib.motion.following.*
 import org.team2471.frc.lib.motion_profiling.MotionCurve
-import org.team2471.frc.lib.motion_profiling.Path2D
 import org.team2471.frc.lib.motion_profiling.following.SwerveParameters
 import org.team2471.frc.lib.units.*
-import org.team2471.off2023.Drive.heading
-import org.team2471.off2023.Drive.modules
-import org.team2471.off2023.Drive.rateCurve
-import org.team2471.off2023.FieldManager.isBlueAlliance
-import org.team2471.off2023.FieldManager.isRedAlliance
-import org.team2471.off2023.FieldManager.reflectFieldByAlliance
 import kotlin.math.absoluteValue
 import kotlin.math.min
-import kotlin.math.sign
 
 @OptIn(DelicateCoroutinesApi::class)
 object Drive : Subsystem("Drive"), SwerveDrive {
@@ -60,8 +49,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
     override val modules: Array<SwerveDrive.Module> = arrayOf(
         Module(
             MotorController(SparkMaxID(Sparks.FRONT_LEFT_DRIVE)),
-            MotorController(SparkMaxID(Sparks.FRONT_LEFT_DRIVE)),
-            Vector2(-9.75, 9.75),
+            MotorController(SparkMaxID(Sparks.FRONT_LEFT_STEER)),
+            Vector2(-13.1, 13.1),
             Preferences.getDouble("Angle Offset 0",-9.05).degrees,
             DigitalSensors.FRONT_LEFT,
             odometer0Entry,
@@ -70,7 +59,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         Module(
             MotorController(SparkMaxID(Sparks.FRONT_RIGHT_DRIVE)),
             MotorController(SparkMaxID(Sparks.FRONT_RIGHT_STEER)),
-            Vector2(9.75, 9.75),
+            Vector2(13.1, 13.1),
             Preferences.getDouble("Angle Offset 1",-253.4).degrees,
             DigitalSensors.FRONT_RIGHT,
             odometer1Entry,
@@ -79,7 +68,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         Module(
             MotorController(SparkMaxID(Sparks.REAR_RIGHT_DRIVE)),
             MotorController(SparkMaxID(Sparks.REAR_RIGHT_STEER)),
-            Vector2(9.75, -9.75),
+            Vector2(13.1, -13.1),
             Preferences.getDouble("Angle Offset 2",-345.05).degrees,
             DigitalSensors.REAR_RIGHT,
             odometer2Entry,
@@ -88,7 +77,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         Module(
             MotorController(SparkMaxID(Sparks.REAR_LEFT_DRIVE)),
             MotorController(SparkMaxID(Sparks.REAR_LEFT_STEER)),
-            Vector2(-9.75, -9.75),
+            Vector2(-13.1, -13.1),
             Preferences.getDouble("Angle Offset 3",-308.41).degrees,
             DigitalSensors.REAR_LEFT,
             odometer3Entry,
@@ -274,7 +263,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         val turnMotor: MotorController,
         override val modulePosition: Vector2,
         override var angleOffset: Angle,
-        canCoderID: Int,
+        digitalInputID: Int,
         private val odometerEntry: NetworkTableEntry,
         val index: Int
     ) : SwerveDrive.Module {
@@ -289,11 +278,11 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         override val angle: Angle
             get() = turnMotor.position.degrees
 
-        val canCoder : CANCoder = CANCoder(canCoderID)
+        val digitalEncoder : DutyCycleEncoder = DutyCycleEncoder(digitalInputID)
 
         val absoluteAngle: Angle
             get() {
-                return (-canCoder.absolutePosition.degrees - angleOffset).wrap()
+                return (-digitalEncoder.absolutePosition.degrees - angleOffset).wrap()
             }
 
         override val treadWear: Double
@@ -369,10 +358,10 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         }
 
         fun setAngleOffset() {
-            val canAngle = -canCoder.absolutePosition
-            Preferences.setDouble("Angle Offset $index", canAngle)
-            angleOffset = canAngle.degrees
-            println("Angle Offset $index = $canAngle")
+            val digitalAngle = -digitalEncoder.absolutePosition
+            Preferences.setDouble("Angle Offset $index", digitalAngle)
+            angleOffset = digitalAngle.degrees
+            println("Angle Offset $index = $digitalAngle")
         }
     }
     fun setAngleOffsets() {
