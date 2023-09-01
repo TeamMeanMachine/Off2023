@@ -282,7 +282,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
         val absoluteAngle: Angle
             get() {
-                return (-digitalEncoder.absolutePosition.degrees - angleOffset).wrap()
+                return (-digitalEncoder.absolutePosition.degrees * 360.0 - angleOffset).wrap()
             }
 
         override val treadWear: Double
@@ -327,7 +327,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         init {
             println("Drive.module.init")
             turnMotor.config(20) {
-                feedbackCoefficient = 360.0 / 2048.0 / 21.428  // 21.451 for bunnybot with same gearing
+                feedbackCoefficient = 360.0 / 2048.0 / 12.0  // 21.451 for bunnybot with same gearing
                 inverted(false)
                 setSensorPhase(false)
                 coastMode()
@@ -344,7 +344,11 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 currentLimit(70, 75, 1)
                 openLoopRamp(0.2)
             }
-
+            GlobalScope.launch {
+                periodic {
+                    println("${turnMotor.motorID}   ${ round(absoluteAngle.asDegrees, 2) }")
+                }
+            }
         }
 
         override fun driveWithDistance(angle: Angle, distance: Length) {
@@ -360,7 +364,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         fun setAngleOffset() {
             val digitalAngle = -digitalEncoder.absolutePosition
             Preferences.setDouble("Angle Offset $index", digitalAngle)
-            angleOffset = digitalAngle.degrees
+            angleOffset = digitalAngle.degrees * 360.0
             println("Angle Offset $index = $digitalAngle")
         }
     }

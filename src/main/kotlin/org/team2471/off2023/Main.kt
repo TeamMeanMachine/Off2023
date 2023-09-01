@@ -7,13 +7,12 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import kotlinx.coroutines.DelicateCoroutinesApi
+import org.team2471.frc.lib.coroutines.periodic
 import org.team2471.frc.lib.framework.MeanlibRobot
 import org.team2471.frc.lib.motion.following.demoMode
 import org.team2471.frc.lib.units.degrees
 import org.team2471.off2023.testing.*
 import java.net.NetworkInterface
-
-
 
 
 @DelicateCoroutinesApi
@@ -88,6 +87,8 @@ object Robot : MeanlibRobot() {
 
     override suspend fun test()  {
         println("test mode begin. Hi.")
+//        Drive.steeringTests()
+//        Drive.driveTests()
 
         Drive.setAngleOffsets()
     }
@@ -97,6 +98,9 @@ object Robot : MeanlibRobot() {
         OI.driverController.rumble = 0.0
         OI.operatorController.rumble = 0.0
         Drive.disable()
+        periodic {
+            println()
+        }
     }
 
     private fun initTimeMeasurement(){
