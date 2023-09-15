@@ -162,7 +162,14 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             rateCurve.storeValue(8.0, 6.0)  // distance, rate
 
             println("in init just before periodic")
+            val module0 = (modules[0] as Module)
+
             periodic {
+                println(module0.angle.asDegrees)
+            //  println("${module0.angle}  ${ round(absoluteAngle.asDegrees, 2) }"
+                // round(absoluteAngle.asDegrees, 2) }
+               //rintln("${turnMotor.motorID}   ${ round(absoluteAngle.asDegrees, 2) }"
+
                 val (x, y) = position
                 xEntry.setDouble(x)
                 yEntry.setDouble(y)
@@ -327,7 +334,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         init {
             println("Drive.module.init")
             turnMotor.config(20) {
-                feedbackCoefficient = 360.0 / 2048.0 / 12.0  // 21.451 for bunnybot with same gearing
+                feedbackCoefficient = 360.0 / 42.0 / 12.0 / 5.08 // 21.451 for bunnybot with same gearing
                 inverted(false)
                 setSensorPhase(false)
                 coastMode()
@@ -346,7 +353,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             }
             GlobalScope.launch {
                 periodic {
-                    println("${turnMotor.motorID}   ${ round(absoluteAngle.asDegrees, 2) }")
+
+//                    println("${turnMotor.motorID}   ${ round(absoluteAngle.asDegrees, 2) }")
                 }
             }
         }
