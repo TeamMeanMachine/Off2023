@@ -340,7 +340,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 coastMode()
                 setRawOffsetConfig(absoluteAngle.asDegrees)
                 pid {
-                    p(0.000002)
+                    p(0.0002)//0.000002
 //                    d(0.0000025)
                 }
             }
