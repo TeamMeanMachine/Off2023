@@ -24,6 +24,7 @@ import org.team2471.frc.lib.motion_profiling.following.SwerveParameters
 import org.team2471.frc.lib.units.*
 import kotlin.math.absoluteValue
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 @OptIn(DelicateCoroutinesApi::class)
 object Drive : Subsystem("Drive"), SwerveDrive {
@@ -165,7 +166,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             val module0 = (modules[0] as Module)
 
             periodic {
-                println(module0.angle.asDegrees)
+                println("module0motorangle ${module0.angle.asDegrees.roundToInt()} absolute ${module0.absoluteAngle.asDegrees.roundToInt()}" )
             //  println("${module0.angle}  ${ round(absoluteAngle.asDegrees, 2) }"
                 // round(absoluteAngle.asDegrees, 2) }
                //rintln("${turnMotor.motorID}   ${ round(absoluteAngle.asDegrees, 2) }"
@@ -334,7 +335,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         init {
             println("Drive.module.init")
             turnMotor.config(20) {
-                feedbackCoefficient = 360.0 / 42.0 / 12.0 / 5.08 // 21.451 for bunnybot with same gearing
+                feedbackCoefficient = (360.0 / 42.0 / 12.0 / 5.08) * (360.5 / 274.04) // 21.451 for bunnybot with same gearing
                 inverted(false)
                 setSensorPhase(false)
                 coastMode()

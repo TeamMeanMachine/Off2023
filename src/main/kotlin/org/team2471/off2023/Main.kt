@@ -87,10 +87,10 @@ object Robot : MeanlibRobot() {
 
     override suspend fun test()  {
         println("test mode begin. Hi.")
-            Drive.steeringTests()
+//            Drive.steeringTests()
 //        Drive.driveTests()
 
-        //Drive.setAngleOffsets()
+        Drive.setAngleOffsets()
     }
 
 
