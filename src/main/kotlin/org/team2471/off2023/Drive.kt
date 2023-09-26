@@ -52,7 +52,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             MotorController(SparkMaxID(Sparks.FRONT_LEFT_DRIVE)),
             MotorController(SparkMaxID(Sparks.FRONT_LEFT_STEER)),
             Vector2(-13.1, 13.1),
-            Preferences.getDouble("Angle Offset 0",-9.05).degrees,
+            Preferences.getDouble("Angle Offset 0", -263.79).degrees,
             DigitalSensors.FRONT_LEFT,
             odometer0Entry,
             0
@@ -61,7 +61,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             MotorController(SparkMaxID(Sparks.FRONT_RIGHT_DRIVE)),
             MotorController(SparkMaxID(Sparks.FRONT_RIGHT_STEER)),
             Vector2(13.1, 13.1),
-            Preferences.getDouble("Angle Offset 1",-253.4).degrees,
+            Preferences.getDouble("Angle Offset 1",-352.78).degrees,
             DigitalSensors.FRONT_RIGHT,
             odometer1Entry,
             1
@@ -70,7 +70,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             MotorController(SparkMaxID(Sparks.REAR_RIGHT_DRIVE)),
             MotorController(SparkMaxID(Sparks.REAR_RIGHT_STEER)),
             Vector2(13.1, -13.1),
-            Preferences.getDouble("Angle Offset 2",-345.05).degrees,
+            Preferences.getDouble("Angle Offset 2",-271.48).degrees,
             DigitalSensors.REAR_RIGHT,
             odometer2Entry,
             2
@@ -79,7 +79,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             MotorController(SparkMaxID(Sparks.REAR_LEFT_DRIVE)),
             MotorController(SparkMaxID(Sparks.REAR_LEFT_STEER)),
             Vector2(-13.1, -13.1),
-            Preferences.getDouble("Angle Offset 3",-308.41).degrees,
+            Preferences.getDouble("Angle Offset 3",-229.93).degrees,
             DigitalSensors.REAR_LEFT,
             odometer3Entry,
             3
@@ -166,7 +166,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             val module0 = (modules[0] as Module)
 
             periodic {
-                println("module0motorangle ${module0.angle.asDegrees.roundToInt()} absolute ${module0.absoluteAngle.asDegrees.roundToInt()}" )
             //  println("${module0.angle}  ${ round(absoluteAngle.asDegrees, 2) }"
                 // round(absoluteAngle.asDegrees, 2) }
                //rintln("${turnMotor.motorID}   ${ round(absoluteAngle.asDegrees, 2) }"
@@ -284,7 +283,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         }
 
         override val angle: Angle
-            get() = turnMotor.position.degrees
+            get() = -turnMotor.position.degrees
 
         val digitalEncoder : DutyCycleEncoder = DutyCycleEncoder(digitalInputID)
 
@@ -306,7 +305,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
         val power: Double
             get() {
-                return driveMotor.output
+                return -driveMotor.output
             }
 
         override val currDistance: Double
@@ -323,10 +322,10 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         }
 
         override var angleSetpoint: Angle = 0.0.degrees
-            set(value) = turnMotor.setPositionSetpoint((angle + (value - angle).wrap()).asDegrees)
+            set(value) = turnMotor.setPositionSetpoint(-(angle + (value - angle).wrap()).asDegrees)
 
         override fun setDrivePower(power: Double) {
-            driveMotor.setPercentOutput(power)
+            driveMotor.setPercentOutput(-power)
         }
 
         val error: Angle
@@ -372,8 +371,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 
         fun setAngleOffset() {
             val digitalAngle = -digitalEncoder.absolutePosition
-            Preferences.setDouble("Angle Offset $index", digitalAngle)
             angleOffset = digitalAngle.degrees * 360.0
+            Preferences.setDouble("Angle Offset $index", angleOffset.asDegrees)
             println("Angle Offset $index = $digitalAngle")
         }
     }

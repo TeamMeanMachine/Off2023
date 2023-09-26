@@ -21,7 +21,7 @@ suspend fun Drive.steeringTests() = use(this) {
     println("Got into steeringTests. Hi")
     for (module in 0..3) {
         println("Got into first for. Hi.")
-        for (quadrant in 0..3) {
+        for (quadrant in 0..4) {
             Drive.modules[module].angleSetpoint = (quadrant * 90.0).degrees
             delay(0.5)
         }
