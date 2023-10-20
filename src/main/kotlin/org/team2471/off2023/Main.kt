@@ -98,9 +98,6 @@ object Robot : MeanlibRobot() {
         OI.driverController.rumble = 0.0
         OI.operatorController.rumble = 0.0
         Drive.disable()
-        periodic {
-            println()
-        }
     }
 
     private fun initTimeMeasurement(){

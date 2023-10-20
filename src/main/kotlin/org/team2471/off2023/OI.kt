@@ -26,8 +26,11 @@ object OI : Subsystem("OI") {
     private val driveTranslationY: Double
         get() = (if (FieldManager.isRedAlliance) -1.0 else 1.0) * driverController.leftThumbstickY.deadband(deadBandDriver).squareWithSign()
 
+    private val forwardTest: Boolean
+        get() = driverController.a
+
     val driveTranslation: Vector2
-        get() = Vector2(driveTranslationX, driveTranslationY) //does owen want this cubed?
+        get() = Vector2(if (forwardTest) 0.0 else driveTranslationX, driveTranslationY) //does owen want this cubed?
 
     val driveRotation: Double
         get() = (driverController.rightThumbstickX.deadband(deadBandDriver)).cube() // * 0.6

@@ -118,14 +118,17 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         kPositionFeedForward = 0.05,
         kpHeading = 0.008,
         kdHeading = 0.01,
-        kHeadingFeedForward = 0.001
+        kHeadingFeedForward = 0.001,
+        kMoveWhileSpin = 24.0,
     )
 
     override val carpetFlow = Vector2(0.0, 1.0)
     override val kCarpet = 0.0234 // how much downstream and upstream carpet directions affect the distance, for no effect, use  0.0 (2.5% more distance downstream)
     override val kTread = 0.0 //.04 // how much of an effect treadWear has on distance (fully worn tread goes 4% less than full tread)  0.0 for no effect
-    override val plannedPath: NetworkTableEntry
-        get() = table.getEntry("")
+    val plannedPathEntry = table.getEntry("Planned Path")
+    val actualRouteEntry = table.getEntry("Actual Route")
+    override val plannedPath: NetworkTableEntry = plannedPathEntry
+    override val actualRoute: NetworkTableEntry = actualRouteEntry
 
     val autoPDController = PDConstantFController(0.015, 0.04, 0.05)
     val teleopPDController =  PDConstantFController(0.012, 0.09, 0.05)
@@ -175,6 +178,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 yEntry.setDouble(y)
                 headingEntry.setDouble(heading.asDegrees)
                 val poseWPI = FieldManager.convertTMMtoWPI(x.feet, y.feet, heading)
+//                println("X: $x, Y: $y")
+//                println(poseWPI)
                 poseEntry.setDoubleArray(doubleArrayOf(poseWPI.x, poseWPI.y, poseWPI.rotation.degrees))
             }
         }
@@ -194,6 +199,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         if (odometer1Entry.getDouble(0.0) > 0.0) Preferences.setDouble("odometer 1", odometer1Entry.getDouble(0.0))
         if (odometer2Entry.getDouble(0.0) > 0.0) Preferences.setDouble("odometer 2", odometer2Entry.getDouble(0.0))
         if (odometer3Entry.getDouble(0.0) > 0.0) Preferences.setDouble("odometer 3", odometer3Entry.getDouble(0.0))
+        actualRoute.setDoubleArray(doubleArrayOf())
+        plannedPath.setString("")
     }
 
     override fun poseUpdate(poseTwist: SwerveDrive.Pose) {
@@ -334,7 +341,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
         init {
             println("Drive.module.init")
             turnMotor.config(20) {
-                feedbackCoefficient = (360.0 / 42.0 / 12.0 / 5.08) * (360.5 / 274.04) // 21.451 for bunnybot with same gearing
+                feedbackCoefficient = (360.0 / 42.0 / 12.0 / 5.08) * (360.5 / 274.04)
                 inverted(false)
                 setSensorPhase(false)
                 coastMode()
@@ -347,7 +354,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             driveMotor.config {
                 brakeMode()
                 //                    wheel diam / 12 in per foot * pi / ticks / gear ratio
-                feedbackCoefficient = 4.0 / 12.0 * Math.PI / 2048.0 / 5.42 * (90.8/96.0)
+                feedbackCoefficient = 3.0 / 12.0 * Math.PI / 42.0 / 4.71
+//                inverted(true)
                 currentLimit(70, 75, 1)
                 openLoopRamp(0.2)
             }
