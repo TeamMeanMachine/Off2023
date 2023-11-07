@@ -30,7 +30,7 @@ object DigitalSensors {
 }
 
 object Falcons {
-
+    const val TURRET = 10
 }
 
 object CANCoders {
