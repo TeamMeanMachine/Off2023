@@ -1,20 +1,50 @@
 package org.team2471.off2023
 
 import edu.wpi.first.networktables.NetworkTableInstance
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.team2471.frc.lib.coroutines.MeanlibDispatcher
+import org.team2471.frc.lib.coroutines.periodic
+import org.team2471.frc.lib.framework.Subsystem
+import org.team2471.frc.lib.units.Angle
+import org.team2471.frc.lib.units.degrees
 
-object Limelight {
+object Limelight : Subsystem("Limelight") {
     private val table = NetworkTableInstance.getDefault().getTable("limelight-front")
     private val target0XEntry = table.getEntry("Turret Current")
     private val validTargetsEntry = table.getEntry("tv")
 
     private const val lengthHeightMinRatio = 3.5
     const val limelightHeight = 16 // inches
+    const val limelightScreenWidth = 320
+    const val limelightScreenHeight = 320
 
+    var currentTargets  : List<BucketTarget>? = null
+    var filteredTargets : List<BucketTarget>? = null
+    init {
+
+        GlobalScope.launch(MeanlibDispatcher) {
+
+            periodic {
+                currentTargets = identifyBuckets()
+                filteredTargets = currentTargets
+                if (filteredTargets != null) {
+                    filteredTargets?.filter {
+                        it.isRed == FieldManager.isBlueAlliance
+                    }
+                }
+            }
+        }
+    }
+
+    fun getAngleToBucket(bucket: BucketTarget) : Angle {
+        return (bucket.x*29.8).degrees
+    }
 
     val validTargets: Boolean
         get() = validTargetsEntry.getDouble(0.0) == 1.0
 
-    fun seeTargets(): List<BucketTarget> {
+    fun identifyBuckets(): List<BucketTarget> {
 
         // find all long strips
         var longStrips = arrayListOf<Int>()
@@ -34,11 +64,11 @@ object Limelight {
             val shortStripY = table.getEntry("ty${entryNum}").getDouble(0.0)
 
             for (i in 0 until longStrips.size) {
-                val target = longStripsColor[i]
+                val target = longStrips[i]
                 val longStripX = table.getEntry("tx${target}").getDouble(0.0)
-                val longStripHorizontal = table.getEntry("thor${target}").getDouble(0.0)
-                val longStripY = table.getEntry("tx${target}").getDouble(0.0)
-                if (shortStripX < longStripX + longStripHorizontal/2 ||
+                val longStripHorizontal = table.getEntry("thor${target}").getDouble(0.0) / (0.5 * limelightScreenWidth)
+                val longStripY = table.getEntry("ty${target}").getDouble(0.0)
+                if (shortStripX < longStripX + longStripHorizontal/2 &&
                     shortStripX > longStripX - longStripHorizontal/2) {
                     if (shortStripY > longStripY) {
                         longStripsColor[i] -= 1
@@ -46,11 +76,14 @@ object Limelight {
                         longStripsColor[i] += 1
                     }
                 }
+                //println("X: $shortStripX $longStripX $longStripHorizontal")
             }
         }
 
+
         var targets = arrayListOf<BucketTarget>()
         for (i in 0 until longStrips.size) {
+//            println("id: ${longStrips[i]}: " + longStripsColor[i])
             if (longStripsColor[i] == 0) continue // color for long strip is not known
             targets.add(BucketTarget(
                 longStrips[i],
@@ -59,6 +92,9 @@ object Limelight {
                 table.getEntry("ty${longStrips[i]}").getDouble(0.0)
             ))
         }
+
+//        println("Targets: ")
+//        println(targets)
 
         return targets
     }

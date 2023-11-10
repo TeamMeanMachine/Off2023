@@ -38,6 +38,9 @@ object OI : Subsystem("OI") {
     val driveRightTrigger: Double
         get() = driverController.rightTrigger
 
+    val driveA: Boolean
+        get() = driverController.a
+
     val operatorLeftTrigger: Double
         get() = operatorController.leftTrigger
 
