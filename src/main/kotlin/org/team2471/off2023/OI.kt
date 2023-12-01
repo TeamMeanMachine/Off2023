@@ -1,5 +1,9 @@
 package org.team2471.off2023
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.team2471.frc.lib.coroutines.MeanlibDispatcher
+import org.team2471.frc.lib.coroutines.periodic
 import org.team2471.frc.lib.framework.Subsystem
 import org.team2471.frc.lib.input.*
 import org.team2471.frc.lib.math.Vector2
@@ -8,7 +12,8 @@ import org.team2471.frc.lib.math.deadband
 import org.team2471.frc.lib.math.squareWithSign
 import org.team2471.frc.lib.motion.following.xPose
 import org.team2471.frc.lib.units.degrees
-import org.team2471.off2023.Turret.turretSetpoint
+import org.team2471.frc.lib.units.radians
+import kotlin.math.atan2
 
 object OI : Subsystem("OI") {
     val driverController = XboxController(0)
@@ -37,9 +42,6 @@ object OI : Subsystem("OI") {
 
     val driveRightTrigger: Double
         get() = driverController.rightTrigger
-
-    val driveA: Boolean
-        get() = driverController.a
 
     val operatorLeftTrigger: Double
         get() = operatorController.leftTrigger
@@ -70,14 +72,15 @@ object OI : Subsystem("OI") {
         ({driverController.dPad == Controller.Direction.LEFT}).whenTrue {
             println("Left")
             println("HI: ${ Limelight.targetNum() }")
-//            turretSetpoint = -170.degrees
+            Turret.turretSetpoint -= 90.degrees
 //            println(NetworkTableInstance.getDefault().getTable("limelight-front").getEntry("json").getString("null"))
         }
 
         ({driverController.dPad == Controller.Direction.RIGHT}).whenTrue {
             println("Right")
-           turretSetpoint = 170.degrees
+            Turret.turretSetpoint = 170.degrees
 
         }
+
     }
 }

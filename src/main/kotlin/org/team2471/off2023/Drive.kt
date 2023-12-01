@@ -24,7 +24,6 @@ import org.team2471.frc.lib.motion_profiling.following.SwerveParameters
 import org.team2471.frc.lib.units.*
 import kotlin.math.absoluteValue
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 @OptIn(DelicateCoroutinesApi::class)
 object Drive : Subsystem("Drive"), SwerveDrive {
@@ -164,15 +163,13 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             rateCurve.setMarkBeginOrEndKeysToZeroSlope(false)
             rateCurve.storeValue(1.0, 2.0)  // distance, rate
             rateCurve.storeValue(8.0, 6.0)  // distance, rate
-
+            var prevHeading = heading
             println("in init just before periodic")
             val module0 = (modules[0] as Module)
-
             periodic {
             //  println("${module0.angle}  ${ round(absoluteAngle.asDegrees, 2) }"
                 // round(absoluteAngle.asDegrees, 2) }
                //rintln("${turnMotor.motorID}   ${ round(absoluteAngle.asDegrees, 2) }"
-
                 val (x, y) = position
                 xEntry.setDouble(x)
                 yEntry.setDouble(y)
@@ -181,6 +178,8 @@ object Drive : Subsystem("Drive"), SwerveDrive {
 //                println("X: $x, Y: $y")
 //                println(poseWPI)
                 poseEntry.setDoubleArray(doubleArrayOf(poseWPI.x, poseWPI.y, poseWPI.rotation.degrees))
+//                Turret.updateRobotAngle(prevHeading - heading)
+//                prevHeading = heading
             }
         }
     }
