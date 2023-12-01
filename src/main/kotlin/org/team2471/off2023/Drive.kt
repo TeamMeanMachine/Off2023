@@ -37,6 +37,15 @@ object Drive : Subsystem("Drive"), SwerveDrive {
     val odometer2Entry = table.getEntry("Odometer 2")
     val odometer3Entry = table.getEntry("Odometer 3")
 
+    val absoluteAngle0Entry = table.getEntry("Analog Angle 0")
+    val absoluteAngle1Entry = table.getEntry("Analog Angle 1")
+    val absoluteAngle2Entry = table.getEntry("Analog Angle 2")
+    val absoluteAngle3Entry = table.getEntry("Analog Angle 3")
+    val motorAngle0Entry = table.getEntry("Motor Angle 0")
+    val motorAngle1Entry = table.getEntry("Motor Angle 1")
+    val motorAngle2Entry = table.getEntry("Motor Angle 2")
+    val motorAngle3Entry = table.getEntry("Motor Angle 3")
+
     val useGyroEntry = table.getEntry("Use Gyro")
     val angleToNodeEntry = table.getEntry("Angle To Node")
     val demoBoundingBoxEntry = table.getEntry("Demo Bounding Box")
@@ -177,10 +186,16 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 xEntry.setDouble(x)
                 yEntry.setDouble(y)
                 headingEntry.setDouble(heading.asDegrees)
-                val poseWPI = FieldManager.convertTMMtoWPI(x.feet, y.feet, heading)
-//                println("X: $x, Y: $y")
-//                println(poseWPI)
-                poseEntry.setDoubleArray(doubleArrayOf(poseWPI.x, poseWPI.y, poseWPI.rotation.degrees))
+
+                motorAngle0Entry.setDouble((modules[0] as Module).angle.wrap().asDegrees)
+                motorAngle1Entry.setDouble((modules[1] as Module).angle.wrap().asDegrees)
+                motorAngle2Entry.setDouble((modules[2] as Module).angle.wrap().asDegrees)
+                motorAngle3Entry.setDouble((modules[3] as Module).angle.wrap().asDegrees)
+
+                absoluteAngle0Entry.setDouble((modules[0] as Module).absoluteAngle.asDegrees)
+                absoluteAngle1Entry.setDouble((modules[1] as Module).absoluteAngle.asDegrees)
+                absoluteAngle2Entry.setDouble((modules[2] as Module).absoluteAngle.asDegrees)
+                absoluteAngle3Entry.setDouble((modules[3] as Module).absoluteAngle.asDegrees)
             }
         }
     }
@@ -357,7 +372,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 feedbackCoefficient = 3.0 / 12.0 * Math.PI / 42.0 / 4.71
 //                inverted(true)
                 currentLimit(70, 75, 1)
-                openLoopRamp(0.2)
+//                openLoopRamp(0.2)
             }
             GlobalScope.launch {
                 periodic {
