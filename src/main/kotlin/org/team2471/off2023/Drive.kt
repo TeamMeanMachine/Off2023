@@ -346,6 +346,7 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 setSensorPhase(false)
                 coastMode()
                 setRawOffsetConfig(absoluteAngle.asDegrees)
+                currentLimit(15, 20, 20)
                 pid {
                     p(0.0002)//0.000002
 //                    d(0.0000025)
@@ -357,7 +358,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
                 feedbackCoefficient = 3.0 / 12.0 * Math.PI / 42.0 / 4.71
 //                inverted(true)
                 currentLimit(70, 75, 1)
-                openLoopRamp(0.2)
             }
             GlobalScope.launch {
                 periodic {
