@@ -30,7 +30,7 @@ object OI : Subsystem("OI") {
         get() = driverController.a
 
     val driveTranslation: Vector2
-        get() = Vector2(if (forwardTest) 0.0 else driveTranslationX, driveTranslationY) //does owen want this cubed?
+        get() = Vector2(if (forwardTest) 0.0 else driveTranslationX, -driveTranslationY) //does owen want this cubed?
 
     val driveRotation: Double
         get() = (driverController.rightThumbstickX.deadband(deadBandDriver)).cube() // * 0.6
