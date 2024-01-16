@@ -66,5 +66,17 @@ object OI : Subsystem("OI") {
         }
         driverController::start.whenTrue { Drive.calibrateRobotPosition() }
         driverController::x.whenTrue { Drive.xPose() }
+        operatorController::a.whenTrue {
+            Intake.intaking = !Intake.intaking
+            println("intaking ${Intake.intaking}")
+        }
+        operatorController::b.whenTrue {
+            Intake.conveying = !Intake.conveying
+            println("conveying ${Intake.conveying}")
+        }
+        operatorController::y.whenTrue {
+            Intake.shooting = !Intake.shooting
+            println("shooting ${Intake.shooting}")
+        }
     }
 }

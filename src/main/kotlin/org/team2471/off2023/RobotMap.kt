@@ -30,7 +30,12 @@ object DigitalSensors {
 }
 
 object Falcons {
-
+    const val INTAKE_TOP = 19
+    const val INTAKE_BOTTOM = 12
+    const val CONVEYOR_TOP = 11
+    const val CONVEYOR_BOTTOM = 18
+    const val SHOOTER_TOP = 24
+    const val SHOOTER_BOTTOM = 13
 }
 
 object CANCoders {

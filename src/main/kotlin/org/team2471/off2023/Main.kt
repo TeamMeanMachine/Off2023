@@ -45,12 +45,13 @@ object Robot : MeanlibRobot() {
         println("NEVER GONNA GIVE YOU UP")
         println(BuildConfig.BUILD_TIME)
 
-        FieldManager
+//        FieldManager
+        Intake
         OI
         println("Field Manager Active! Is Red ${FieldManager.isRedAlliance}")
         Drive
         println("Activating Drive!")
-        Testing
+//        Testing
         Drive.zeroGyro()
         Drive.heading = 0.0.degrees
 
@@ -91,7 +92,8 @@ object Robot : MeanlibRobot() {
 //            Drive.steeringTests()
 //        Drive.driveTests()
 
-        Drive.setAngleOffsets()
+//        Drive.setAngleOffsets()
+        joystickTest()
     }
 
 

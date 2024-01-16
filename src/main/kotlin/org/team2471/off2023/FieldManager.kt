@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance
 import org.team2471.frc.lib.math.Vector2
 import org.team2471.frc.lib.math.fitToRange
 import org.team2471.frc.lib.units.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.absoluteValue
 
 object FieldManager {
@@ -80,7 +83,7 @@ object FieldManager {
     val doubleSubstationHeight = 37.375.inches
 
     val isRedAlliance: Boolean
-        get() = DriverStation.getAlliance() == Alliance.Red
+        get() = DriverStation.getAlliance() == Optional.of(Alliance.Red)
     val isBlueAlliance: Boolean
         get() = !isRedAlliance
 

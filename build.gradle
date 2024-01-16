@@ -3,7 +3,7 @@ import edu.wpi.first.gradlerio.GradleRIOPlugin
 plugins {
     id "java"
     id "org.jetbrains.kotlin.jvm" version "1.7.20"
-    id "edu.wpi.first.GradleRIO" version "2023.4.2"
+    id "edu.wpi.first.GradleRIO" version "2024.1.1"
     id "com.github.gmazzo.buildconfig" version "3.0.0"
 }
 
@@ -85,8 +85,8 @@ dependencies {
     nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.roborio)
     nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.desktop)
 
-   // testImplementation 'junit:junit:4.12'
-   // simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
+    // testImplementation 'junit:junit:4.12'
+    // simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 
     //testImplementation 'junit:junit:4.12'
 
@@ -127,7 +127,7 @@ wrapper {
 
 compileKotlin {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_17
-    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
