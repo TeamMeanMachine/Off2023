@@ -29,8 +29,8 @@ object Intake : Subsystem("shooterThing") {
     val conveyorMotor = MotorController(FalconID(Falcons.CONVEYOR_TOP), FalconID(Falcons.CONVEYOR_BOTTOM))
     val shooterMotor = MotorController(FalconID(Falcons.SHOOTER_TOP), FalconID(Falcons.SHOOTER_BOTTOM))
 
-    private val i2cPort: I2C.Port = I2C.Port.kMXP
-    private val colorSensor = ColorSensorV3(i2cPort)
+//    private val i2cPort: I2C.Port = I2C.Port.kMXP
+//    private val colorSensor = ColorSensorV3(i2cPort)
 
     init {
         intakePercentEntry.setDouble(0.0)

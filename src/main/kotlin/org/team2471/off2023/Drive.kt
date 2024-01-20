@@ -358,7 +358,6 @@ object Drive : Subsystem("Drive"), SwerveDrive {
             turnMotor.config(20) {
                 feedbackCoefficient = (360.0 / 42.0 / 12.0 / 5.08) * (360.5 / 274.04)
                 inverted(false)
-                setSensorPhase(false)
                 coastMode()
                 setRawOffsetConfig(absoluteAngle.asDegrees)
                 currentLimit(15, 20, 20)
