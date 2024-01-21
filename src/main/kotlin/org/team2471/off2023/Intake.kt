@@ -25,7 +25,7 @@ object Intake : Subsystem("shooterThing") {
     var conveying = false
     var intaking = false
 
-    val intakeMotors = MotorController(FalconID(Falcons.INTAKE_BOTTOM))
+    val intakeMotors = MotorController(FalconID(Falcons.INTAKE_TOP), FalconID(Falcons.INTAKE_BOTTOM))
     val conveyorMotor = MotorController(FalconID(Falcons.CONVEYOR_TOP), FalconID(Falcons.CONVEYOR_BOTTOM))
     val shooterMotor = MotorController(FalconID(Falcons.SHOOTER_TOP), FalconID(Falcons.SHOOTER_BOTTOM))
 
@@ -33,9 +33,9 @@ object Intake : Subsystem("shooterThing") {
 //    private val colorSensor = ColorSensorV3(i2cPort)
 
     init {
-        intakePercentEntry.setDouble(0.0)
-        conveyorPercentEntry.setDouble(0.0)
-        shooterPercentEntry.setDouble(0.0)
+        intakePercentEntry.setDouble(0.1)
+        conveyorPercentEntry.setDouble(0.1)
+        shooterPercentEntry.setDouble(0.1)
         intakeMotors.config {
             currentLimit(20, 30, 1)
             coastMode()
@@ -47,14 +47,14 @@ object Intake : Subsystem("shooterThing") {
             currentLimit(20, 30, 1)
             coastMode()
             inverted(false)
-            followersInverted(true)
+            followersInverted(false)
         }
 
         shooterMotor.config {
             currentLimit(20, 30, 1)
             coastMode()
             inverted(false)
-            followersInverted(true)
+            followersInverted(false)
         }
 
         GlobalScope.launch{
@@ -62,17 +62,17 @@ object Intake : Subsystem("shooterThing") {
 //                println("distance: ${colorSensor.proximity}    color: ${colorSensor.color}")
 
                 if (intaking) {
-                    intakeMotors.setPercentOutput(intakePercentEntry.getDouble(0.0))
+                    intakeMotors.setPercentOutput(intakePercentEntry.getDouble(0.1))
                 } else {
                     intakeMotors.setPercentOutput(0.0)
                 }
                 if (shooting) {
-                    shooterMotor.setPercentOutput(shooterPercentEntry.getDouble(0.0))
+                    shooterMotor.setPercentOutput(shooterPercentEntry.getDouble(0.1))
                 } else {
                     shooterMotor.setPercentOutput(0.0)
                 }
                 if (conveying) {
-                    conveyorMotor.setPercentOutput(conveyorPercentEntry.getDouble(0.0))
+                    conveyorMotor.setPercentOutput(conveyorPercentEntry.getDouble(0.1))
                 } else {
                     conveyorMotor.setPercentOutput(0.0)
                 }
