@@ -1,0 +1,3 @@
+object MainPane: Pane() {
+
+}
