@@ -54,6 +54,8 @@ wpi.java.debugJni = false
 def includeDesktopSupport = false
 
 dependencies {
+//    implementation project("meanlib")
+
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
